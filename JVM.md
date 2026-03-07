@@ -60,9 +60,15 @@ Heap Area is also divided in 3 areas
 
 ---
 
+-- Are all above thing occur in compile time because here byte code is converted to machine code line by line
 
-
-
+# Execution Engine
+- Execute the byte code loaded in to the JVm
+- Interpretor - here byte code is converted to machine code line by line
+- JIT (Just in Time) from the Interpretor - frequently used byte code into native machine (speed), find code hot spot (which require again and again)
+- JNI - to interact with native code (oprating specific feature whic coded in C)
+- Native method libraries (used by JNI)
+- Thread manager
 
 
 
