@@ -1,21 +1,71 @@
+# JVM (Java Virtual Machine) 
+- The JVM is an abstract computing machine that enables a computer to run Java programs
+
+```
+Chrome → asks OS → OS talks to real CPU
+```
+
+## It has its own:
+- 📋 Instruction set (bytecode) — like a CPU has instructions
+- 🧠 Memory model — like a machine manages memory
+- 📦 Stack & Registers — like real hardware has
+```
+Java Program → talks to JVM (fake machine)
+                    ↓
+              JVM talks to real OS + CPU
+```
+
+---
+
+# JVM Architecture Overview
+
 1. Class Loader
 2. Memory Area
 3. Execution Engine
 
+```
+┌─────────────────────────────────────────────┐
+│                  JVM                        │
+│  ┌──────────────────────────────────────┐   │
+│  │        Class Loader Subsystem        │   │
+│  └──────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────┐   │
+│  │          Runtime Data Areas          │   │
+│  │  Method Area │ Heap │ Stack │ PC Reg │   │
+│  └──────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────┐   │
+│  │        Execution Engine              │   │
+│  │  Interpreter │ JIT Compiler │ GC     │   │
+│  └──────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────┐   │
+│  │       Native Interface (JNI)         │   │
+│  └──────────────────────────────────────┘   │
+└─────────────────────────────────────────────┘
+```
+
+
+
+
 # Class Loader
+- Responsible for loading, linking, and initializing classes at runtime.
+
 1. BootStrap ClassLoader : responsible for loading core java classes
-   > it has highest priority
-   > implemented in native code
-   > import java.base module after java 9 and before rt.jar
+   - it has highest priority because Java CANNOT run without them.
+   - implemented in native code
+   - import java.base module after java 9 and before rt.jar
 
 2. plateform classLoader(Extension Class Loader):
-   > Load plateform specific modiles
-   > java.sql
-   > java.desktop
-   > lib/ext backward compatebility
+   - Java CAN run without them.
+   - Load plateform specific modules
+   - **`javax.*`** (the x means extension!)
+   - java.sql, javax.crypto.*   → encryption, javax.xml.*   → XML parsing
+   - lib/ext backward compatebility
 
 3. Application classes
-   > Loades the classes from application classPath/module path
+   - Every class you write + every library you download (Spring, Hibernate, Gson, etc.) is loaded by Application ClassLoader.
+
+## Delegation Model:
+- A class loader first delegates to its parent before trying to load itself. This prevents rogue classes from overriding core Java classes.
 
 class Loader also have Linking step
 1. Verification : is this byte code is good
@@ -23,6 +73,18 @@ class Loader also have Linking step
 3. Resolution : variable to actual refernce
 
 Initialization by ACTUAL VALUE
+
+## Quick Picture
+```
+Bootstrap loads:      String, Object, Integer, System
+                      ↑ JVM cannot start without these
+
+Extension loads:      Cipher, SSLSocket, DocumentBuilder
+                      ↑ Extra JDK features, pre-installed
+
+Application loads:    BankAccount, SpringApplication, Gson
+                      ↑ Your code + libraries you added
+```
 
 # Memory Area/class Area/ MetaSpace
 > before java 8 method area use PermGen - it is a part of heap and we can not grow and shink
