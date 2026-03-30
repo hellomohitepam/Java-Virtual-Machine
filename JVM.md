@@ -247,29 +247,172 @@ Heap is divided into generations for efficient garbage collection:
 * Young Gen → new objects
 * Old Gen → long-lived objects
 
-# Stack Area
-- Each thread have its own stack.
-- stores methed specific variables - parameter, local variable
-- immediate result also store here
+# JVM Memory: Stack Area & Related Components
 
-# Program counter register
-- keep track for currently executing instructions and next executing instructions 
-- Each thread have own PC registor
+## 🧩 Stack Area
 
-# Native method Stack
-- for non java methods
+### 📌 What is Stack Memory?
+
+- Each **thread has its own stack**
+- Used to store **method-specific data**
+
+### 🧠 What is stored in Stack?
+
+- Method parameters
+- Local variables
+- Object references (not actual objects)
+- Intermediate / immediate results of calculations
+
+### 📌 Example
+
+```java
+void test() {
+    int a = 10;              // stored in stack
+    int b = 20;              // stored in stack
+    int c = a + b;           // intermediate result stored in stack
+}
+```
+# ⚡ Key Points
+- Created when a thread starts
+- Destroyed when thread ends
+- Works in LIFO (Last In First Out) manner
+- Each method call creates a stack frame
+
+# 🧭 Program Counter (PC Register)
+## 📌 What is PC Register?
+- Keeps track of:
+1. Current executing instruction
+2. Next instruction to execute
+# ⚡ Key Points
+- Each thread has its own PC Register
+- Helps JVM manage execution flow
+- Essential for multi-threading
+
+# ⚙️ Native Method Stack
+## 📌 What is Native Method Stack?
+- Used for executing non-Java methods
+- Handles code written in languages like: C, C++
+# ⚡ Key Points
+- Separate from Java stack
+- Used when JVM interacts with native libraries (JNI)
 
 ---
 
 -- Are all above thing occur in compile time because here byte code is converted to machine code line by line
 
-# Execution Engine
-- Execute the byte code loaded in to the JVm
-- Interpretor - here byte code is converted to machine code line by line
-- JIT (Just in Time) from the Interpretor - frequently used byte code into native machine (speed), find code hot spot (which require again and again)
-- JNI - to interact with native code (oprating specific feature whic coded in C)
-- Native method libraries (used by JNI)
-- Thread manager
+# JVM Execution Engine
+
+## 🧩 What is Execution Engine?
+
+- The **Execution Engine** is a part of JVM responsible for:
+  - Executing the **bytecode** loaded into the JVM
+  - Converting bytecode into **machine code**
+
+---
+
+## ⚙️ Components of Execution Engine
+
+---
+
+## 🔹 1. Interpreter
+
+### 📌 What it does
+
+- Converts **bytecode → machine code line by line**
+- Executes instructions one at a time
+
+### ⚡ Pros
+
+- Simple and fast to start execution
+
+### ❌ Cons
+
+- Slower for repeated method calls (same code executed again and again)
+
+---
+
+## 🚀 2. JIT (Just-In-Time Compiler)
+
+### 📌 What it does
+
+- Works along with the interpreter
+- Identifies **frequently used code (hotspots)**
+- Converts that bytecode into **native machine code once**
+- Reuses compiled code for better performance
+
+### ⚡ Key Points
+
+- Improves execution speed
+- Avoids repeated interpretation
+- Stores optimized native code
+
+---
+
+## 🔗 3. JNI (Java Native Interface)
+
+### 📌 What it does
+
+- Allows Java programs to interact with **native (non-Java) code**
+- Used to call code written in:
+  - C
+  - C++
+
+### ⚡ Use Case
+
+- Access OS-level features
+- Use platform-specific libraries
+
+---
+
+## 📚 4. Native Method Libraries
+
+### 📌 What it is
+
+- Collection of **native code libraries**
+- Used by JNI
+
+### ⚡ Example
+
+- System-level operations
+- Hardware interaction
+
+---
+
+## 🧵 5. Thread Manager
+
+### 📌 What it does
+
+- Manages execution of multiple threads
+- Handles:
+  - Thread scheduling
+  - Synchronization
+  - Memory allocation per thread
+
+---
+
+## 🧠 Execution Flow (Simple)
+
+1. Bytecode loaded into JVM  
+2. Interpreter starts execution  
+3. JIT identifies hotspots  
+4. Converts them to native code  
+5. JNI used if native code required  
+
+---
+
+## 🧠 Interview One-Liner
+
+> The Execution Engine executes bytecode using an interpreter and JIT compiler, supports native calls via JNI, and manages threads for efficient program execution.
+
+---
+
+## ✅ Summary
+
+- Interpreter → line-by-line execution  
+- JIT → optimizes frequently used code  
+- JNI → connects Java with native code  
+- Native Libraries → support JNI  
+- Thread Manager → handles multithreading  
 
 
 
