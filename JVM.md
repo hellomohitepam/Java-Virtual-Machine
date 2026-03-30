@@ -86,27 +86,166 @@ Application loads:    BankAccount, SpringApplication, Gson
                       ↑ Your code + libraries you added
 ```
 
-# Memory Area/class Area/ MetaSpace
-> before java 8 method area use PermGen - it is a part of heap and we can not grow and shink
-> now method area implementation is metaspace
-## information related to the 
-- class metadata - class name, fields, constant
-- method metadata - it stores the byte code for static & instance method, method name ,signature, method access modifier, construtor bytes code information about reflective object such as method fields constructor also proxy  (static variables before java 8)
-- anatotation metadata -
-- classloader metadata 
+# Java Memory: PermGen vs Metaspace
+
+## 🧠 Overview
+
+In Java, the **Method Area** is a part of the JVM memory specification used to store:
+
+*  class metadata - class name, fields, constant
+*  method metadata - it stores the byte code for static & instance method, method name ,signature, method access modifier, construtor bytes code information about reflective object such as method fields constructor also proxy  (static variables before java 8)
+*  anatotation metadata -
+*  classloader metadata 
+* Static variables
+* Runtime constant pool
+
+The implementation of the Method Area has changed over Java versions:
+
+* **Before Java 8 → PermGen (Permanent Generation)**
+* **Java 8 and later → Metaspace**
 
 ---
-where variables in the method stores
----
-# Heap Area
-- here all objects as well as instance, static variable stores
-- Theory object of class type is created which stores the information of that class which we created
 
-Heap Area is also divided in 3 areas 
-1. Young Generation - new objects
-   > Eden
-   > survior
-2. old generation - long lived objects 
+## 🔹 Before Java 8: PermGen
+
+### 📌 Key Characteristics
+
+* Part of **Heap memory**
+* Stores:
+
+  * Class metadata
+  * Static variables
+  * Interned strings (partially)
+
+### ⚠️ Limitations
+
+* Fixed size (configured using `-XX:MaxPermSize`)
+* Cannot grow dynamically
+* Prone to memory issues
+
+### ❌ Common Error
+
+```
+java.lang.OutOfMemoryError: PermGen space
+```
+
+---
+
+## 🚀 Java 8 and Later: Metaspace
+
+### 📌 Key Characteristics
+
+* Stored in **Native Memory (outside heap)**
+* Automatically grows as needed
+* More flexible memory management
+
+### ⚙️ Configuration
+
+* `-XX:MaxMetaspaceSize` (optional limit)
+
+### ❌ Possible Error
+
+```
+java.lang.OutOfMemoryError: Metaspace
+```
+
+---
+
+## 🔁 Comparison Table
+
+| Feature          | PermGen (Before Java 8) | Metaspace (Java 8+) |
+| ---------------- | ----------------------- | ------------------- |
+| Memory Location  | Heap                    | Native Memory       |
+| Size             | Fixed                   | Dynamic             |
+| Tuning Parameter | `MaxPermSize`           | `MaxMetaspaceSize`  |
+| OOM Error        | PermGen space           | Metaspace           |
+
+---
+
+
+---
+
+## 🧠 Interview One-Liner
+
+> Before Java 8, Method Area was implemented using PermGen (heap-based, fixed size). From Java 8 onward, it is implemented using Metaspace, which resides in native memory and grows dynamically.
+
+---
+
+
+---
+
+# 🧩 Heap Area
+
+## 📌 What is Heap?
+
+Heap is the memory area where:
+
+* All **objects** are stored
+* **Instance variables** are stored
+* **Static variables** are stored (in method area/metaspace logically, but associated with class in heap lifecycle)
+
+> When we create an object, memory is allocated in the heap.
+
+```java
+Person p = new Person();
+```
+
+* `p` → stored in stack (reference)
+* Object → stored in heap
+
+---
+
+## 🧠 Important Concept
+
+When a class is loaded:
+
+* A **class metadata structure** is created (in Method Area / Metaspace)
+* Objects of that class are created in **Heap**
+
+---
+
+## 🔁 Heap Division
+
+Heap is divided into generations for efficient garbage collection:
+
+### 1️⃣ Young Generation (New Objects)
+
+* Where newly created objects go
+
+#### Sub-parts:
+
+* **Eden Space** → new objects created here
+* **Survivor Space (S0, S1)** → objects that survive GC
+
+---
+
+### 2️⃣ Old Generation (Tenured)
+
+* Stores **long-lived objects**
+* Objects promoted here after surviving multiple GC cycles
+
+---
+
+## ⚡ Simple Flow
+
+1. Object created → Eden
+2. Survives GC → Survivor
+3. Survives multiple times → Old Generation
+
+---
+
+## 🧠 Interview One-Liner
+
+> Local variables are stored in stack memory, while objects and instance variables are stored in heap memory. The heap is divided into young and old generations for efficient garbage collection.
+
+---
+
+## ✅ Summary
+
+* Stack → method variables & references
+* Heap → objects & instance data
+* Young Gen → new objects
+* Old Gen → long-lived objects
 
 # Stack Area
 - Each thread have its own stack.
